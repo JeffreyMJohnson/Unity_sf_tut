@@ -4,46 +4,56 @@ using System.Collections;
 public class Player : MonoBehaviour
 {
 
-    Vector3 currentDirection = Vector3.left;
-    float moveSpeed = 5;
+    Vector2 currentDirection = Vector2.right;
+    public float moveForce = 10;
+    public float maxHSpeed = 10;
+
+    Rigidbody2D rBody = null;
+    Animator anim = null;
 
     // Use this for initialization
     void Start()
     {
-
+        rBody = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
         HandleUI();
+        Debug.Log("current velocity: " + rBody.velocity);
+        anim.SetFloat("hVelocity", Mathf.Abs(rBody.velocity.x));
     }
 
     void HandleUI()
     {
         if (Input.GetKey(KeyCode.A))
         {
-            Move(Vector3.left);
-            
+            Move(-Vector2.right);//left
+
 
         }
-        if(Input.GetKey(KeyCode.D))
+        if (Input.GetKey(KeyCode.D))
         {
-            Move(Vector3.right);
+            Move(Vector2.right);
         }
     }
 
-    void Move(Vector3 direction)
+    void Move(Vector2 direction)
     {
+
         if (currentDirection != direction)
         {
-            Debug.Log("flip it.");
             transform.Rotate(Vector3.up, 180.0f);
             currentDirection = direction;
         }
         
-        Vector3 dx = currentDirection * moveSpeed * Time.deltaTime;
-        Debug.Log("direction: " + dx);
-        transform.Translate(dx, Space.World);
+        if (rBody.velocity.x > -maxHSpeed && rBody.velocity.x < maxHSpeed)
+        {
+            rBody.AddForce(currentDirection * moveForce);
+        }
     }
+
+
 }
