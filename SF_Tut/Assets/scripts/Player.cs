@@ -3,13 +3,14 @@ using System.Collections;
 
 public class Player : MonoBehaviour
 {
-
-    Vector2 currentDirection = Vector2.right;
-    public float moveForce = 10;
+public float moveForce = 10;
     public float maxHSpeed = 10;
 
+
+    Vector2 currentDirection = Vector2.right;
     Rigidbody2D rBody = null;
     Animator anim = null;
+    bool walking = false;
 
     // Use this for initialization
     void Start()
@@ -28,6 +29,7 @@ public class Player : MonoBehaviour
 
     void HandleUI()
     {
+
         if (Input.GetKey(KeyCode.A))
         {
             Move(-Vector2.right);//left
@@ -37,6 +39,16 @@ public class Player : MonoBehaviour
         if (Input.GetKey(KeyCode.D))
         {
             Move(Vector2.right);
+        }
+
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            anim.SetTrigger("jab");
+        }
+
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            anim.SetTrigger("cross");
         }
     }
 
@@ -55,5 +67,9 @@ public class Player : MonoBehaviour
         }
     }
 
+    void Jab()
+    {
+
+    }
 
 }
