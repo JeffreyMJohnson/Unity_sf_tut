@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Player : MonoBehaviour
 {
-public float moveForce = 10;
+    public float moveForce = 10;
     public float maxHSpeed = 10;
 
 
@@ -23,7 +23,7 @@ public float moveForce = 10;
     void Update()
     {
         HandleUI();
-        Debug.Log("current velocity: " + rBody.velocity);
+        //Debug.Log("current velocity: " + rBody.velocity);
         anim.SetFloat("hVelocity", Mathf.Abs(rBody.velocity.x));
     }
 
@@ -43,12 +43,12 @@ public float moveForce = 10;
 
         if (Input.GetKeyDown(KeyCode.O))
         {
-            anim.SetTrigger("jab");
+            Jab();
         }
 
         if (Input.GetKeyDown(KeyCode.K))
         {
-            anim.SetTrigger("cross");
+            Cross();
         }
     }
 
@@ -60,7 +60,7 @@ public float moveForce = 10;
             transform.Rotate(Vector3.up, 180.0f);
             currentDirection = direction;
         }
-        
+
         if (rBody.velocity.x > -maxHSpeed && rBody.velocity.x < maxHSpeed)
         {
             rBody.AddForce(currentDirection * moveForce);
@@ -69,7 +69,12 @@ public float moveForce = 10;
 
     void Jab()
     {
+        anim.SetTrigger("jab");
+    }
 
+    void Cross()
+    {
+        anim.SetTrigger("cross");
     }
 
 }
