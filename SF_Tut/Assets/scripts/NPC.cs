@@ -1,14 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Player : MonoBehaviour
+public class NPC : MonoBehaviour
 {
+
     public float moveForce = 10;
     public float maxHSpeed = 10;
-    public float jumpForce = 1;
-    public bool NPC = false;
     public BoxCollider2D faceHitBox;
-
 
     Vector2 currentDirection = Vector2.right;
     Rigidbody2D rBody = null;
@@ -19,17 +17,12 @@ public class Player : MonoBehaviour
     {
         rBody = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!NPC)
-        {
-            HandleUI();
-        }
-
+        //HandleUI();
         //Debug.Log("current velocity: " + rBody.velocity);
         anim.SetFloat("hVelocity", Mathf.Abs(rBody.velocity.x));
     }
@@ -76,7 +69,11 @@ public class Player : MonoBehaviour
 
     void Jab()
     {
-        anim.SetTrigger("jab");
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("idle"))
+        {
+            anim.SetTrigger("jab");
+        }
+
     }
 
     void Cross()
@@ -84,9 +81,21 @@ public class Player : MonoBehaviour
         anim.SetTrigger("cross");
     }
 
-    void Jump()
+    void OnTriggerEnter2D(Collider2D col)
     {
+
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("idle"))
+        {
+            Debug.Log("trigger fired on npc.");
+            anim.SetTrigger("faceDamage");
+            col.gameObject.GetComponent<HitboxManager>().SetHitBox(HitboxManager.HITBOXES.CLEAR);
+
+        }
 
     }
 
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        Debug.Log("collision fired on npc.");
+    }
 }
