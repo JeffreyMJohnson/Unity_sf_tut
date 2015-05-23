@@ -8,18 +8,22 @@ public class HitboxManager : MonoBehaviour
 
     public BoxCollider2D jab0;
     public BoxCollider2D jab1;
+    public BoxCollider2D cross0;
+    public BoxCollider2D cross1;
 
     //used for organization
     private BoxCollider2D[] colliders;
 
     //collider on this game object
-    private BoxCollider2D localCollider;
+    private BoxCollider2D localCollider = null;
 
     //say box but are using polygon colliders
     public enum HITBOXES
     {
         JAB0,
         JAB1,
+        CROSS0,
+        CROSS1,
         CLEAR //special case to remove all boxes
     }
 
@@ -27,46 +31,54 @@ public class HitboxManager : MonoBehaviour
     void Start()
     {
         //set up the array so script can more easiloy set up boxes
-        colliders = new BoxCollider2D[] { jab0, jab1 };
-
-        //create polygon collider
-        localCollider = gameObject.AddComponent<BoxCollider2D>();
-        localCollider.isTrigger = true; //set as a trigger so it doesn't collide with environment
-        //localCollider.pathCount = 0;//clear auto-generated polygons
-        localCollider.size = Vector2.zero;//clear auto-generated polygons
+        colliders = new BoxCollider2D[] { jab0, jab1, cross0, cross1 };
     }
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        if (localCollider.size.x > 0.01 && localCollider.size.y > 0.01)
+
+        //was i hit or doing the hitting
+        if(col.gameObject.GetComponent<Player>().IsHittableBox(col as BoxCollider2D))
         {
-            //hitting mode
-            //this object hitting so fire the damage animation on who collided with
+            Debug.Log("hit a hittable box.");
+            //hit hittable box
             col.gameObject.GetComponent<Animator>().SetTrigger("faceDamage");
         }
 
+        if(IsHitBox(col as BoxCollider2D))
+        {
+            Debug.Log("Hit by a hitbox.");
+            //hit by hitbox
+        }
 
+    }
 
+    private bool IsHitBox(BoxCollider2D col)
+    {
+        foreach(BoxCollider2D hitBox in colliders)
+        {
+            if (hitBox.size == col.size && hitBox.offset == col.offset)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void SetHitBox(HITBOXES value)
     {
         if (value != HITBOXES.CLEAR)
         {
-            //Debug.Log("setting box: " + value);
-            //localCollider.SetPath(0, colliders[(int)value].GetPath(0));
+            if(null == localCollider)
+            {
+                localCollider = gameObject.AddComponent<BoxCollider2D>();
+                localCollider.isTrigger = true;
+            }
             localCollider.size = colliders[(int)value].size;
             localCollider.offset = colliders[(int)value].offset;
             return;
         }
-        //localCollider.pathCount = 0;
-        //Debug.Log("setting box: " + value);
-        localCollider.size = Vector2.zero;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        Destroy(localCollider);
+        localCollider = null;
     }
 }

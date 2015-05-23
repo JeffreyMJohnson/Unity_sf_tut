@@ -12,6 +12,8 @@ public class NPC : MonoBehaviour
     Rigidbody2D rBody = null;
     Animator anim = null;
 
+
+    
     // Use this for initialization
     void Start()
     {
@@ -26,6 +28,8 @@ public class NPC : MonoBehaviour
         //Debug.Log("current velocity: " + rBody.velocity);
         anim.SetFloat("hVelocity", Mathf.Abs(rBody.velocity.x));
     }
+
+    
 
     void HandleUI()
     {
@@ -83,7 +87,7 @@ public class NPC : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
-
+        Debug.Log(faceHitBox.IsTouching(col));
         if (anim.GetCurrentAnimatorStateInfo(0).IsName("idle"))
         {
             Debug.Log("trigger fired on npc.");

@@ -23,7 +23,7 @@ public class Player : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (!NPC)
         {
@@ -87,6 +87,11 @@ public class Player : MonoBehaviour
     void Jump()
     {
 
+    }
+
+    public bool IsHittableBox(BoxCollider2D col)
+    {
+        return faceHitBox.offset == col.offset && faceHitBox.size == col.size;
     }
 
 }
